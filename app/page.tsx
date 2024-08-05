@@ -1,9 +1,7 @@
-import { Button } from "./_components/ui/button";
-
-const name = 'test'
+import { Button } from "./_components/ui/button"
 
 const Home = () => {
-  return <Button>Teste</Button>;
-};
+  return <Button>test</Button>
+}
 
-export default Home;
+export default Home
