@@ -17,7 +17,7 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
                 </div>
 
                 {/*  Informações */}
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-60">
                     <h3 className="font-semibold text-sm">{service.name}</h3>
                     <p className="text-sm text-gray-400">{service.description}</p>
 
