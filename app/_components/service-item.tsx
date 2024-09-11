@@ -103,8 +103,6 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     }
 
     const handleCreateBooking = async () => {
-        // 1 Não exibir horários que já foram agendados
-        // 2 Salvar o agendamento para o usuário logado
         try {
             if (!selectedDay || !selectedTime) return;
 
