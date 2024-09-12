@@ -48,7 +48,7 @@ const Home = async () => {
 
         {/* Barra e Botão de Pesquisa */}
         <div className="mt-6">
-          <Search/>
+          <Search />
         </div>
 
         {/* Busca Rápida */}
@@ -69,12 +69,16 @@ const Home = async () => {
         </div>
 
         {/* Agendamentos */}
-        <h2 className="uppercase text-gray-400 font-bold text-xs mt-6 mb-3">
-          Agendamentos
-        </h2>
-        <div className="flex overflow-auto [&::-webkit-scrollbar]:hidden">
-          {confirmedBookings.map((booking) => (<BookingItem key={booking.id} booking={booking}/>))}
-        </div>
+        {confirmedBookings.length > 0 && (
+          <>
+            <h2 className="uppercase text-gray-400 font-bold text-xs mt-6 mb-3">
+              Agendamentos
+            </h2>
+            <div className="flex overflow-auto [&::-webkit-scrollbar]:hidden">
+              {confirmedBookings.map((booking) => (<BookingItem key={booking.id} booking={booking} />))}
+            </div>
+          </>
+        )}
 
         {/* Recomendados */}
         <h2 className="uppercase text-gray-400 font-bold text-xs mt-6 mb-3">
