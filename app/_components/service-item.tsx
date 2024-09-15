@@ -7,8 +7,8 @@ import { Card, CardContent } from "./ui/card";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "./ui/sheet";
 import { Calendar } from "./ui/calendar";
 import { ptBR } from "date-fns/locale"
-import { useEffect, useState } from "react";
-import { addDays, format, set } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import { addDays, format, isPast, isToday, set } from "date-fns";
 import { createBooking } from "../_actions/create-booking";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
@@ -45,11 +45,21 @@ const TIME_LIST = [
     "18:00",
 ]
 
-const getTimeList = (bookings: Booking[]) => {
+interface GetTimeListProps {
+    bookings: Booking[]
+    selectedDay: Date
+}
+
+const getTimeList = ({ bookings, selectedDay }: GetTimeListProps) => {
     return TIME_LIST.filter((time) => {
 
         const hour = Number(time.split(":")[0])
         const minutes = Number(time.split(":")[1])
+
+        const timeIsOnPast = isPast(set(new Date(), { hours: hour, minutes }))
+        if (timeIsOnPast && isToday(selectedDay)) {
+            return false
+        }
 
         const hasBookingOnCurrentTime = bookings.some(
             (booking) => booking.date.getHours() === hour && booking.date.getMinutes() === minutes,
@@ -126,8 +136,16 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
         }
     }
 
+    const timeList = useMemo(() => {
+        if (!selectedDay) return []
+        return getTimeList({
+            bookings: dayBookings,
+            selectedDay,
+        })
+    }, [dayBookings, selectedDay])
+
     return (
-    <>
+        <>
             <Card>
                 <CardContent className="flex items-center gap-3 p-3">
                     {/* Imagem */}
@@ -165,7 +183,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                                             locale={ptBR}
                                             selected={selectedDay}
                                             onSelect={handleDateSelect}
-                                            fromDate={addDays(new Date(), 1)}
+                                            fromDate={addDays(new Date(), 0)}
                                             styles={{
                                                 head_cell: {
                                                     width: "100%",
@@ -192,12 +210,12 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                                     </div>
                                     {selectedDay && (
                                         <div className="p-5 flex overflow-auto gap-3 border-b border-solid [&::-webkit-scrollbar]:hidden">
-                                            {getTimeList(dayBookings).map((time) => (
+                                            {timeList.length > 0 ? timeList.map((time) => (
                                                 <Button key={time} variant={selectedTime === time ? "default" : "outline"} className="rounded-full" onClick={() => handleTimeSelect(time)}
                                                 >
                                                     {time}
                                                 </Button>
-                                            ))}
+                                            )) : <p className="text-xs">Não há horários disponíveis para este dia.</p>}
                                         </div>
                                     )}
 
