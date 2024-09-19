@@ -79,7 +79,7 @@ const Home = async () => {
               Agendamentos
             </h2>
             <div className="flex overflow-auto [&::-webkit-scrollbar]:hidden">
-              {confirmedBookings.map((booking) => (<BookingItem key={booking.id} booking={booking} />))}
+              {confirmedBookings.map((booking) => (<BookingItem key={booking.id} booking={JSON.parse(JSON.stringify(booking))} />))}
             </div>
           </>
         )}
